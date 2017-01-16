@@ -30,8 +30,8 @@ client.log(
 client.query(
     client_name='my-client',
     tag1='tag-1-value',
-    timestamp__gte='2017-01-01',
-    timestamp__lte='2018-01-01'
+    time__gte='2017-01-01',
+    time__lte='2018-01-01'
 )
 
 # Aggregate query -- returns counts of specific log messages
@@ -39,8 +39,8 @@ client.query(
 client.agg_query(
     client_name='my-client',
     tag1='tag-1-value',
-    timestamp__gte='2017-01-01',
-    timestamp__lte='2018-01-01',
+    time__gte='2017-01-01',
+    time__lte='2018-01-01',
     _num_intervals=10
 )
 ```

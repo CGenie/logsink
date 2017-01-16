@@ -34,7 +34,10 @@ class Logs(Resource):
     @token_required
     def get(self):
         return [
-            row for row in storage.query(**flask.request.args)
+            row for row in storage.query(
+                # Force convert to dict
+                **{arg: value for arg, value in flask.request.args.items()}
+            )
         ]
 
     @token_required
