@@ -1,0 +1,61 @@
+Metadata-Version: 1.1
+Name: logsink
+Version: 0.0.4
+Summary: Log sink client library
+Home-page: http://packages.python.org/an_example_pypi_project
+Author: Przemyslaw Kaminski
+Author-email: cgenie@gmail.com
+License: BSD
+Description: # Log sink client library
+        This is a library for easy interaction with the Log sink server.
+        
+        ## Installation
+        ```bash
+        python setup.py install
+        ```
+        
+        ## Usage
+        Initialize the client with server address data:
+        
+        ```python
+        import libsink
+        
+        client = libsink.Client(
+            'my-client',
+            host='localhost',
+            port=6789,
+            token='logsink-token'
+        )
+        
+        # Insert some log data
+        client.log(
+            'some message',
+            tag1='tag-1-value',
+            tag2='tag-2-value',
+        )
+        
+        # Query the data (returns individual log message)
+        client.query(
+            client_name='my-client',
+            tag1='tag-1-value',
+            timestamp__gte='2017-01-01',
+            timestamp__lte='2018-01-01'
+        )
+        
+        # Aggregate query -- returns counts of specific log messages
+        # satisfying the query, grouped into time slices
+        client.agg_query(
+            client_name='my-client',
+            tag1='tag-1-value',
+            timestamp__gte='2017-01-01',
+            timestamp__lte='2018-01-01',
+            _num_intervals=10
+        )
+        ```
+        
+        
+Keywords: logsink
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Utilities
+Classifier: License :: OSI Approved :: BSD License

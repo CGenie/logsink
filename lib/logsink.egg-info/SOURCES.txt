@@ -1,0 +1,7 @@
+README
+setup.py
+logsink.egg-info/PKG-INFO
+logsink.egg-info/SOURCES.txt
+logsink.egg-info/dependency_links.txt
+logsink.egg-info/requires.txt
+logsink.egg-info/top_level.txt
