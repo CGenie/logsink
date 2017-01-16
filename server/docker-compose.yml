@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  influxdb:
+    image: influxdb:1.1-alpine
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+
+  api:
+    build: .
+    links:
+      - influxdb
+    volumes:
+      - .:/logsink_server
+    ports:
+      - "6789:6789"
+    environment:
+      FLASK_APP: api.py
+      FLASK_DEBUG: 1
+      ROOT_TOKEN: 'logsink-token'
+    command: flask run --host=0.0.0.0 --port 6789
