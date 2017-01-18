@@ -32,12 +32,8 @@ class InfluxDBStorage:
 
         return client
 
-    def __init__(self, test_mode=False):
-        self.test_mode = test_mode
-        if test_mode:
-            self.client = self.get_client(dbname='logsink-test')
-        else:
-            self.client = self.get_client()
+    def __init__(self, dbname):
+        self.client = self.get_client(dbname=dbname)
 
     def insert(self, message, **kwargs):
         if set(QUERY_KEYWORDS).intersection(kwargs):

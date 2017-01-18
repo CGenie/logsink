@@ -1,4 +1,4 @@
-# Log sink client library
+# Logsink client library
 This is a library for easy interaction with the Log sink server.
 
 ## Installation
@@ -10,9 +10,9 @@ python setup.py install
 Initialize the client with server address data:
 
 ```python
-import libsink
+import logsink
 
-client = libsink.Client(
+client = logsink.Client(
     'my-client',
     host='localhost',
     port=6789,

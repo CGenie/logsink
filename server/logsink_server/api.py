@@ -5,23 +5,14 @@ from flask_restful_swagger_2 import Api, swagger, Schema
 from functools import wraps
 import os
 
+from logsink_server import auth
 from logsink_server import storage
-
-
-root_token = os.environ['ROOT_TOKEN']
-test_token = os.environ['TEST_TOKEN']  # A token for testing the API from external calls
-
-
-def test_mode():
-    return flask.request.headers.get('X-Auth-Token') == test_token
 
 
 def token_required(method):
     @wraps(method)
     def wrapper(*args, **kwargs):
-        token = flask.request.headers.get('X-Auth-Token')
-        # TODO: Simple authentication -- only 1 predefined token
-        if token not in [root_token, test_token]:
+        if not auth.is_authenticated(flask.request):
             return {'error': 'Token incorrect'}, 403
 
         return method(*args, **kwargs)
@@ -114,7 +105,7 @@ class Logs(Resource):
         # Force convert to dict
         args = {arg: value for arg, value in flask.request.args.items()}
 
-        db = storage.InfluxDBStorage(test_mode=test_mode())
+        db = storage.InfluxDBStorage(dbname=auth.token_dbname(flask.request))
 
         return [
             row for row in db.query(**args)
@@ -156,7 +147,7 @@ class Logs(Resource):
         log = log_parser.parse_args()
         app.logger.debug('Log: %r', log)
 
-        db = storage.InfluxDBStorage(test_mode=test_mode())
+        db = storage.InfluxDBStorage(dbname=auth.token_dbname(flask.request))
 
         db.insert(log['message'], **log['tags'])
 
@@ -180,7 +171,7 @@ class Logs(Resource):
         # Force convert to dict
         args = {arg: value for arg, value in flask.request.args.items()}
 
-        db = storage.InfluxDBStorage(test_mode=test_mode())
+        db = storage.InfluxDBStorage(dbname=auth.token_dbname(flask.request))
 
         db.clear(**args)
 
@@ -224,7 +215,7 @@ class AggregatedLogs(Resource):
     })
     @token_required
     def get(self):
-        db = storage.InfluxDBStorage(test_mode=test_mode())
+        db = storage.InfluxDBStorage(dbname=auth.token_dbname(flask.request))
 
         return [
             row for row in db.aggregated(

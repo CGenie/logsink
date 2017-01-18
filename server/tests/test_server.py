@@ -73,7 +73,7 @@ class TestServer(unittest.TestCase):
         log_r = self.client.log('test message', time='2017-01-02T02:00:00Z')
         self.assertEqual(log_r.status_code, 201)
 
-        time.sleep(2)
+        time.sleep(1)
 
         query_r = self.client.agg_query(
             time__gte='2017-01-01T00:00:00Z',
@@ -93,3 +93,24 @@ class TestServer(unittest.TestCase):
             query_r[1]['count_message'],
             2
         )
+
+    def test_clear(self):
+        log_r = self.client.log('test message 1', tag='value1')
+        self.assertEqual(log_r.status_code, 201)
+
+        log_r = self.client.log('test message 2', tag='value1')
+        self.assertEqual(log_r.status_code, 201)
+
+        log_r = self.client.log('test message 3', tag='value2')
+        self.assertEqual(log_r.status_code, 201)
+
+        time.sleep(1)
+
+        query_r = self.client.query()
+        self.assertEqual(len(query_r), 3)
+
+        clean_r = self.client.clear(tag='value1')
+        time.sleep(1)
+
+        query_r = self.client.query()
+        self.assertEqual(len(query_r), 1)
