@@ -41,7 +41,7 @@ client.agg_query(
     tag1='tag-1-value',
     time__gte='2017-01-01',
     time__lte='2018-01-01',
-    _num_intervals=10
+    num_intervals=10
 )
 ```
 
