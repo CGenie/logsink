@@ -36,6 +36,22 @@ The storage chosen for this project is InfluxDB. It can be switched to any other
 suitable for the job provided couple of methods are implemented. See
 `storage.py -> ABCStorage` abstract class to see what's required.
 
+## Scalability
+The API is quite simple and easy to scale up. The storage, however, is more complicated.
+InfluxDB cluster is proprietary and paid. Since we're removing old data, the size/load
+of DB should remain constant when there are no new endpoints connecting to it.
+
+However, when new clients keep on coming, scaling up can become necessary. One solution
+would be to get the paid clustered option of InfluxDB. Another is to switch to some
+other backend. Some suggestions:
+
+- [Redis](https://redis.io/)
+- [EventQL](https://eventql.io/)
+- [RiakTS](http://basho.com/products/riak-ts/)
+- [Prometheus](https://prometheus.io) (see the [Federation docs](https://prometheus.io/docs/operating/federation/))
+
+Out of these, EventQL looks very promising but research is needed.
+
 ## Things to do
 ### Restriction on tags
 This is a prototype so simple `**kwargs` passing in functions is used. This has the drawback
