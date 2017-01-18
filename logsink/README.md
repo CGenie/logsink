@@ -26,12 +26,22 @@ client.log(
     tag2='tag-2-value',
 )
 
-# Query the data (returns individual log message)
+# Query the data (returns individual log messages)
 client.query(
     client_name='my-client',
     tag1='tag-1-value',
     time__gte='2017-01-01',
     time__lte='2018-01-01'
+)
+
+# Results are paginated
+client.query(
+    client_name='my-client',
+    tag1='tag-1-value',
+    time__gte='2017-01-01',
+    time__lte='2018-01-01',
+    page=2,
+    per_page=25
 )
 
 # Aggregate query -- returns counts of specific log messages
