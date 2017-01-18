@@ -29,5 +29,6 @@ services:
       - api
     environment:
       API_URL: http://localhost:6789/api/swagger.json
+      API_KEY: 'logsink-token'
     ports:
       - "6788:80"

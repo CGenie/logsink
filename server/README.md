@@ -9,6 +9,7 @@ docker-compose up
 ```
 
 Swagger-UI container is included so you can inspect the docs by going to <http://localhost:6788>.
+You need to click on 'Authorize' button and type in the sample token `logsink-token`.
 
 ## Things to do
 ### Authentication

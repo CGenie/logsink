@@ -28,7 +28,7 @@ def get_client(host='influxdb',
 
 
 def insert(message, **kwargs):
-    if set(QUERY_KEYWORDS).intersect(kwargs):
+    if set(QUERY_KEYWORDS).intersection(kwargs):
         raise ValueError(
             "%s are keywords reserved for querying, you cannot use them as tags." % ', '.join(QUERY_KEYWORDS)
         )

@@ -20,7 +20,6 @@ TODO:
 * client-side library
 * server-side API
 ** fields: time, message, arbitrary tags
-** API usable from JS browser
 ** documentation for API endpoints
 * storage: time, log facility, log message, additional data (request headers, user id, user email)
 * querying by: time, log facility, message content + pagination
