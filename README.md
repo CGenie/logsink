@@ -39,6 +39,3 @@ TODO:
 * server-side API
 * write in README:
 ** how to implement search by querystring argument?
-** automatically remove messages after specific time
-* info that storage.py has abstract 'insert/query/aggregated' interface and we can also use
-  Prometheus or Redis
