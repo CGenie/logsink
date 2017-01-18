@@ -6,8 +6,10 @@ import pytz
 
 DEFAULT_NUM_INTERVALS = 10  # default number of intervals when returning an aggregated query
 DEFAULT_QUERY_DAY_SPAN = 10  # default time interval length for query/aggregated query
+DEFAULT_PER_PAGE = 25
 
-QUERY_KEYWORDS = ['num_intervals', 'time__lte', 'time__gte']
+# TODO: this could be omitted if we encoded query as JSON in the GET parameters
+QUERY_KEYWORDS = ['num_intervals', 'page', 'per_page', 'time__lte', 'time__gte']
 
 
 def get_client(host='influxdb',
@@ -49,10 +51,11 @@ def insert(message, **kwargs):
 
 def query(**kwargs):
     where = _where_filter(**kwargs)
+    limit = _limit(**kwargs)
 
     client = get_client()
 
-    return client.query('SELECT * FROM logs WHERE %s;' % where)
+    return client.query('SELECT * FROM logs WHERE %s %s;' % (where, limit))
 
 
 def aggregated(**kwargs):
@@ -108,7 +111,7 @@ def _where_filter(**kwargs):
 
     # Other tags are filtered by exact value
     for tag, value in kwargs.items():
-        if tag in ['message', 'time__lte', 'time__gte']:
+        if tag in QUERY_KEYWORDS:
             continue
 
         query.append(
@@ -116,3 +119,11 @@ def _where_filter(**kwargs):
         )
 
     return ' AND '.join(query)
+
+
+def _limit(**kwargs):
+    page = int(kwargs.get('page', 1))
+    per_page = int(kwargs.get('per_page', DEFAULT_PER_PAGE))
+    offset = (page - 1)*per_page
+
+    return 'LIMIT %d OFFSET %d' % (per_page, offset)

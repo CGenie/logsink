@@ -20,9 +20,7 @@ TODO:
 * client-side library
 * server-side API
 ** fields: time, message, arbitrary tags
-** documentation for API endpoints
 * storage: time, log facility, log message, additional data (request headers, user id, user email)
-* querying by: time, log facility, message content + pagination
 * server should provide aggregated information
 * write in README:
 ** how to implement search by querystring argument?

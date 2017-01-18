@@ -49,9 +49,11 @@ class LogMessageModel(Schema):
     properties = {
         'message': {
             'type': 'string',
+            'description': 'Message of the log.',
         },
         'tags': {
             'type': 'object',
+            'description': 'Any additional tags for the log.',
         },
     }
     required = ['message', 'tags']
@@ -64,7 +66,7 @@ class Logs(Resource):
         'parameters': [
             {
                 'name': 'message',
-                'description': 'Query part of the message',
+                'description': 'Query part of the message. Will to a regex search.',
                 'in': 'path',
                 'type': 'string',
             },
@@ -80,6 +82,18 @@ class Logs(Resource):
                 'in': 'path',
                 'type': 'string',
             },
+            {
+                'name': 'page',
+                'description': 'Page number.',
+                'in': 'path',
+                'type': 'integer',
+            },
+            {
+                'name': 'per_page',
+                'description': 'Items per page.',
+                'in': 'path',
+                'type': 'integer',
+            },
         ],
         'security': {
             'auth-token': [],
@@ -92,11 +106,11 @@ class Logs(Resource):
     })
     @token_required
     def get(self):
+        # Force convert to dict
+        args = {arg: value for arg, value in flask.request.args.items()}
+
         return [
-            row for row in storage.query(
-                # Force convert to dict
-                **{arg: value for arg, value in flask.request.args.items()}
-            )
+            row for row in storage.query(**args)
         ]
 
     @swagger.doc({
