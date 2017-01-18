@@ -8,8 +8,10 @@ To run you need Docker and `docker-compose`:
 docker-compose up
 ```
 
-Swagger-UI container is included so you can inspect the docs by going to <http://localhost:6788>.
-You need to click on 'Authorize' button and type in the sample token `logsink-token`.
+Swagger-UI container is included so you can inspect the API docs by going to
+<http://localhost:6788>.
+You need to click on 'Authorize' button and type in the sample token `logsink-token`
+for the Swagger sample queries to work.
 
 ## Testing
 Install [tox](https://tox.readthedocs.io/en/latest/). Start the server as described above.

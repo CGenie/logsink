@@ -6,6 +6,13 @@ This is a library for easy interaction with the Log sink server.
 python setup.py install
 ```
 
+## Testing
+Install [tox](https://tox.readthedocs.io/en/latest/). Then run
+
+```bash
+tox
+```
+
 ## Usage
 Initialize the client with server address data:
 

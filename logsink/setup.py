@@ -20,7 +20,6 @@ setup(
     keywords = "logsink",
     url = "http://packages.python.org/an_example_pypi_project",
     install_requires=['requests==2.12.4'],
-    long_description=read('README.md'),
     packages=['logsink'],
     classifiers=[
         "Development Status :: 3 - Alpha",

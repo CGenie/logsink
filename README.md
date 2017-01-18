@@ -34,8 +34,3 @@ For text search in log message we use the regexp query funcitonality:
 ```
 SELECT /<regular_expression_field_key>/ FROM /<regular_expression_measurement>/ WHERE [<tag_key> <operator> /<regular_expression_tag_value>/ | <field_key> <operator> /<regular_expression_field_value>/]
 ```
-
-TODO:
-* server-side API
-* write in README:
-** how to implement search by querystring argument?
