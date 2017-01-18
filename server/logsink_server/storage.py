@@ -1,3 +1,4 @@
+import abc
 import datetime
 from dateutil import parser
 import influxdb
@@ -10,6 +11,81 @@ DEFAULT_PER_PAGE = 25
 
 # TODO: this could be omitted if we encoded query as JSON in the GET parameters
 QUERY_KEYWORDS = ['num_intervals', 'page', 'per_page', 'time__lte', 'time__gte']
+
+
+class ABCStorage(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def __init__(self, dbname):
+        """Initialize the storage in a database given by dbname."""
+
+        raise NotImplemented()
+
+    @abc.abstractmethod
+    def insert(self, message, **kwargs):
+        """Insert message to the storage.
+
+        **kwargs represent arbitrary tags associated with the message."""
+
+        raise NotImplemented()
+
+    @abc.abstractmethod
+    def query(self, **kwargs):
+        """Perform DB query with filters defined in **kwargs.
+
+        Special fields in kwargs:
+        * message: will filter only part of log messages for the given message
+        * time__lte: timestamp of returned logs will be less or equal to this value
+            By default this is now().
+        * time__gte: timestamp of returned logs will be greater or equal to this value
+            By default this is time__lte - DEFAULT_QUERY_DAY_SPAN days
+        * page, per_page: pagination data (default is page = 1, per_page = DEFAULT_PER_PAGE)
+
+
+        Returns:
+        [
+            {
+                'message': ...,
+                'time': <date-time-isoformat>,
+                'tag1': 'value1',
+                ...
+            },
+            ...
+        ]
+        """
+
+        raise NotImplemented()
+
+    @abc.abstractmethod
+    def aggregated(self, **kwargs):
+        """Return aggregated statistics of logs (a histogram).
+
+        The query parameters in **kwargs are the same as in the query method.
+        Additionally there is:
+        * num_intervals: number of intervals the result should be sliced into
+
+        Returns:
+        [
+            {
+                'count_message': 1,
+                'time': '2017-01-01T00:00:00',
+            },
+            {
+                'count_message': 2,
+                'time': '2017-01-02T00:00:00',
+            },
+            ...
+        ]
+        """
+
+    @abc.abstractmethod
+    def clear(self, **kwargs):
+        """Clear the database of log entries.
+
+        Log entries can be filtered using **kwargs just like in the query method.
+        If time__lte, time__gte are not provided, ALL timestamps are taken into
+        account (compare with query method where only specific time span is
+        returned).
+        """
 
 
 class InfluxDBStorage:
@@ -63,7 +139,7 @@ class InfluxDBStorage:
         ).get_points()
 
     def aggregated(self, **kwargs):
-        num_intervals = kwargs.pop('num_intervals', DEFAULT_NUM_INTERVALS)
+        num_intervals = kwargs.pop('num_intervals', DEFAULT_NUM_INTERVALS) - 1
 
         time__lte, time__gte = _time_range(**kwargs)
         span = (time__gte - time__lte).total_seconds()
@@ -89,6 +165,8 @@ class InfluxDBStorage:
         return self.client.query(
             'DELETE FROM logs %s;' % where
         )
+
+ABCStorage.register(InfluxDBStorage)
 
 
 # Utility functions

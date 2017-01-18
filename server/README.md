@@ -29,6 +29,11 @@ If we used Redis as a backend for log storage,
 would be sufficient for testing normally (provided we didn't use advanced Redis functionality
 like Lua scripting for example). But with InfluxDB we need to do it on some database.
 
+## Storage
+The storage chosen for this project is InfluxDB. It can be switched to any other storage
+suitable for the job provided couple of methods are implemented. See
+`storage.py -> ABCStorage` abstract class to see what's required.
+
 ## Things to do
 ### Restriction on tags
 This is a prototype so simple `**kwargs` passing in functions is used. This has the drawback

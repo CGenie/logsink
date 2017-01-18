@@ -79,7 +79,7 @@ class TestServer(unittest.TestCase):
             time__gte='2017-01-01T00:00:00Z',
             time__lte='2017-01-10T00:00:00Z'
         )
-        self.assertEqual(len(query_r), 11)
+        self.assertEqual(len(query_r), 10)
 
         self.assertEqual(
             sum(agg['count_message'] for agg in query_r),
