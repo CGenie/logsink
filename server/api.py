@@ -13,7 +13,7 @@ def token_required(method):
     @wraps(method)
     def wrapper(*args, **kwargs):
         token = flask.request.headers.get('X-Auth-Token')
-        # Simple authentication
+        # TODO: Simple authentication -- only 1 predefined token
         if token != root_token:
             return {'error': 'Token incorrect'}, 403
 
@@ -27,7 +27,7 @@ api = Api(app)
 
 log_parser = reqparse.RequestParser()
 log_parser.add_argument('message', required=True)
-log_parser.add_argument('params', type=dict, required=True)
+log_parser.add_argument('tags', type=dict, required=True)
 
 
 class Logs(Resource):
@@ -45,12 +45,24 @@ class Logs(Resource):
         log = log_parser.parse_args()
         app.logger.debug('Log: %r', log)
 
-        storage.insert(log['message'], **log['params'])
+        storage.insert(log['message'], **log['tags'])
 
         return log, 201
 
 
+class AggregatedLogs(Resource):
+    @token_required
+    def get(self):
+        return [
+            row for row in storage.aggregated(
+                # Force convert to dict
+                **{arg: value for arg, value in flask.request.args.items()}
+            )
+        ]
+
+
 api.add_resource(Logs, '/logs')
+api.add_resource(AggregatedLogs, '/logs/aggregated')
 
 
 if __name__ == '__main__':
