@@ -7,6 +7,8 @@ import pytz
 DEFAULT_NUM_INTERVALS = 10  # default number of intervals when returning an aggregated query
 DEFAULT_QUERY_DAY_SPAN = 10  # default time interval length for query/aggregated query
 
+QUERY_KEYWORDS = ['num_intervals', 'time__lte', 'time__gte']
+
 
 def get_client(host='influxdb',
                port=8086,
@@ -26,6 +28,11 @@ def get_client(host='influxdb',
 
 
 def insert(message, **kwargs):
+    if set(QUERY_KEYWORDS).intersect(kwargs):
+        raise ValueError(
+            "%s are keywords reserved for querying, you cannot use them as tags." % ', '.join(QUERY_KEYWORDS)
+        )
+
     client = get_client()
 
     client.write_points([
@@ -59,7 +66,9 @@ def aggregated(**kwargs):
 
     client = get_client()
 
-    return client.query('SELECT COUNT(*) FROM logs WHERE %s GROUP BY time(%ss);' % (where, diff))
+    return client.query(
+        'SELECT COUNT(*) FROM logs WHERE %s GROUP BY time(%ss);' % (where, diff)
+    )
 
 
 # Utility functions

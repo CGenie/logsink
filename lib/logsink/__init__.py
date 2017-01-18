@@ -29,11 +29,11 @@ class Client:
     def log(self, message, **kwargs):
         data = {
             'message': message,
-            'params': {
+            'tags': {
                 'client_name': self.client_name,
             },
         }
-        data['params'].update(kwargs)
+        data['tags'].update(kwargs)
 
         return requests.post(
             '%s/logs' % self.url,

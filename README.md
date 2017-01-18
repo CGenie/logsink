@@ -4,11 +4,11 @@ The server can then be queried with optional filters by time, log message and ta
 Also, a Python client library is included for easy interaction with the server.
 
 ## Client library
-For more info, see `lib/README`.
+For more info, see `lib/README.md`.
 
 
 ## Server
-For more info, see `server/README`.
+For more info, see `server/README.md`.
 
 InfluxDB aggregation:
 https://docs.influxdata.com/influxdb/v1.1/query_language/data_exploration/#group-by-time-intervals-and-fill
@@ -18,11 +18,8 @@ SELECT /<regular_expression_field_key>/ FROM /<regular_expression_measurement>/ 
 
 TODO:
 * client-side library
-** forbidden tag names: time, _num_intervals
-** message is required
 * server-side API
 ** fields: time, message, arbitrary tags
-** authentication (use env-passed token at first: 'logsink-token')
 ** API usable from JS browser
 ** documentation for API endpoints
 * storage: time, log facility, log message, additional data (request headers, user id, user email)
