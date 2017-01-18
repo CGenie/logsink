@@ -24,8 +24,10 @@ services:
     command: flask run --host=0.0.0.0 --port 6789
 
   swagger-ui:
-    image: swaggerapi/swagger-ui
+    image: schickling/swagger-ui
     links:
       - api
+    environment:
+      API_URL: http://localhost:6789/api/swagger.json
     ports:
-      - "6788:8080"
+      - "6788:80"
