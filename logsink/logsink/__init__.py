@@ -48,6 +48,13 @@ class Client:
             headers=self.headers
         ).json()
 
+    def clear(self, **params):
+        return requests.delete(
+            '%s/logs' % self.url,
+            params=params,
+            headers=self.headers
+        )
+
     def agg_query(self, **params):
         return requests.get(
             '%s/logs/aggregated' % self.url,

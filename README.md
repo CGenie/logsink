@@ -4,7 +4,7 @@ The server can then be queried with optional filters by time, log message and ta
 Also, a Python client library is included for easy interaction with the server.
 
 ## Client library
-For more info, see `lib/README.md`.
+For more info, see `logsink/README.md`.
 
 
 ## Server
@@ -17,11 +17,7 @@ Regexp query (https://docs.influxdata.com/influxdb/v1.1/query_language/data_expl
 SELECT /<regular_expression_field_key>/ FROM /<regular_expression_measurement>/ WHERE [<tag_key> <operator> /<regular_expression_tag_value>/ | <field_key> <operator> /<regular_expression_field_value>/]
 
 TODO:
-* client-side library
 * server-side API
-** fields: time, message, arbitrary tags
-* storage: time, log facility, log message, additional data (request headers, user id, user email)
-* server should provide aggregated information
 * write in README:
 ** how to implement search by querystring argument?
 ** automatically remove messages after specific time

@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name = "logsink",
-    version = "0.0.4",
+    version = "0.1.0",
     author = "Przemyslaw Kaminski",
     author_email = "cgenie@gmail.com",
     description = ("Log sink client library"),
@@ -21,6 +21,7 @@ setup(
     url = "http://packages.python.org/an_example_pypi_project",
     install_requires=['requests==2.12.4'],
     long_description=read('README.md'),
+    packages=['logsink'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",

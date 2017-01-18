@@ -20,6 +20,7 @@ services:
       FLASK_APP: logsink_server
       FLASK_DEBUG: 1
       ROOT_TOKEN: 'logsink-token'
+      TEST_TOKEN: 'test-token'
       PYTHONPATH: /logsink_server
     command: flask run --host=0.0.0.0 --port 6789
 

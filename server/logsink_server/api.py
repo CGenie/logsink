@@ -1,5 +1,5 @@
 import flask
-from flask_cors import CORS
+from flask_cors import CORS  # This is to allow swagger-ui access
 from flask_restful import Resource, reqparse  # Api is from swagger
 from flask_restful_swagger_2 import Api, swagger, Schema
 from functools import wraps
@@ -9,6 +9,11 @@ from logsink_server import storage
 
 
 root_token = os.environ['ROOT_TOKEN']
+test_token = os.environ['TEST_TOKEN']  # A token for testing the API from external calls
+
+
+def test_mode():
+    return flask.request.headers.get('X-Auth-Token') == test_token
 
 
 def token_required(method):
@@ -16,7 +21,7 @@ def token_required(method):
     def wrapper(*args, **kwargs):
         token = flask.request.headers.get('X-Auth-Token')
         # TODO: Simple authentication -- only 1 predefined token
-        if token != root_token:
+        if token not in [root_token, test_token]:
             return {'error': 'Token incorrect'}, 403
 
         return method(*args, **kwargs)
@@ -109,8 +114,10 @@ class Logs(Resource):
         # Force convert to dict
         args = {arg: value for arg, value in flask.request.args.items()}
 
+        db = storage.InfluxDBStorage(test_mode=test_mode())
+
         return [
-            row for row in storage.query(**args)
+            row for row in db.query(**args)
         ]
 
     @swagger.doc({
@@ -149,9 +156,35 @@ class Logs(Resource):
         log = log_parser.parse_args()
         app.logger.debug('Log: %r', log)
 
-        storage.insert(log['message'], **log['tags'])
+        db = storage.InfluxDBStorage(test_mode=test_mode())
+
+        db.insert(log['message'], **log['tags'])
 
         return log, 201
+
+    @swagger.doc({
+        'tags': ['logs'],
+        'description': 'Clear the log database. Can be filtered in the same way as in query.',
+        'parameters': [],
+        'security': {
+            'auth-token': [],
+        },
+        'responses': {
+            '200': {
+                'description': '',
+            },
+        },
+    })
+    @token_required
+    def delete(self):
+        # Force convert to dict
+        args = {arg: value for arg, value in flask.request.args.items()}
+
+        db = storage.InfluxDBStorage(test_mode=test_mode())
+
+        db.clear(**args)
+
+        return 200
 
 
 class AggregatedLogs(Resource):
@@ -191,8 +224,10 @@ class AggregatedLogs(Resource):
     })
     @token_required
     def get(self):
+        db = storage.InfluxDBStorage(test_mode=test_mode())
+
         return [
-            row for row in storage.aggregated(
+            row for row in db.aggregated(
                 # Force convert to dict
                 **{arg: value for arg, value in flask.request.args.items()}
             )
